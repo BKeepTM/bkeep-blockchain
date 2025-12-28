@@ -1,18 +1,24 @@
-//
-// Created by nejcsorgo on 12/23/2025.
-//
-
 #ifndef BLOCKCHAIN_BLOCK_H
 #define BLOCKCHAIN_BLOCK_H
 #include <cstdint>
 #include <string>
-#include <openssl/conf.h>
-#include <openssl/evp.h>
-#include <openssl/err.h>
+
+#include "../sha/sha256.cpp"
 
 class Block {
-    Block(int index, std::string previousHash,uint32_t timestamp, std::string data, int difficulty, int token);
-    v
+    public:
+    Block(int index, std::string previousHash,time_t timestamp, std::string data, int difficulty, int token);
+    std::string calculateHash();
+
+    int index;
+    int difficulty;
+    int token;
+
+    std::string hash;
+    std::string previousHash;
+    std::string data;
+
+    time_t timestamp;
 };
 
 
