@@ -1,16 +1,20 @@
 #include <iostream>
+#include <mpi.h>
+int main(int argc, char** argv) {
+    int process_Rank, size_Of_Cluster;
+    MPI_Init(&argc, &argv);
+    MPI_Comm_size(MPI_COMM_WORLD, &size_Of_Cluster);
+    MPI_Comm_rank(MPI_COMM_WORLD, &process_Rank);
 
-// TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
-int main() {
-    // TIP Press <shortcut actionId="RenameElement"/> when your caret is at the <b>lang</b> variable name to see how CLion can help you rename it.
+    printf("Hello World from process %d of %d\n", process_Rank, size_Of_Cluster);
+
+    MPI_Finalize();
     auto lang = "C++";
     std::cout << "Hello and welcome to " << lang << "!\n";
 
     for (int i = 1; i <= 5; i++) {
-        // TIP Press <shortcut actionId="Debug"/> to start debugging your code. We have set one <icon src="AllIcons.Debugger.Db_set_breakpoint"/> breakpoint for you, but you can always add more by pressing <shortcut actionId="ToggleLineBreakpoint"/>.
         std::cout << "i = " << i << std::endl;
     }
 
     return 0;
-    // TIP See CLion help at <a href="https://www.jetbrains.com/help/clion/">jetbrains.com/help/clion/</a>. Also, you can try interactive lessons for CLion by selecting 'Help | Learn IDE Features' from the main menu.
 }

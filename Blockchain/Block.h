@@ -2,12 +2,13 @@
 #define BLOCKCHAIN_BLOCK_H
 #include <cstdint>
 #include <string>
-
-#include "../sha/sha256.cpp"
+#include <utility>
+#include "../sha/sha256.h"
 
 class Block {
     public:
     Block(int index, std::string previousHash,time_t timestamp, std::string data, int difficulty, int token);
+    Block(int index, std::string previousHash,time_t timestamp, std::string data, int difficulty, int token, std::string &hash);
     std::string calculateHash();
 
     int index;

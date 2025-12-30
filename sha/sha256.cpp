@@ -1,22 +1,44 @@
-#include <iomanip>
-#include <ios>
-#include <string>
-#include <openssl/sha.h>
+#include "sha256.h"
 
+//rais header file drugace multiple definitions....
 namespace sha {
-    // vrne hex string sha256
-    std::string sha256(const std::string &str)
-    {
-        unsigned char hash[SHA256_DIGEST_LENGTH];
-        SHA256_CTX sha256;
-        SHA256_Init(&sha256);
-        SHA256_Update(&sha256, str.c_str(), str.size());
-        SHA256_Final(hash, &sha256);
+    struct OpenSSLFree {
+        void operator()(void* ptr) const {
+            EVP_MD_CTX_free(static_cast<EVP_MD_CTX *>(ptr));
+        }
+    };
+
+    template <typename T>
+    using OpenSSLPointer = std::unique_ptr<T, OpenSSLFree>;
+    // neki shit od stack overflow...
+    std::string sha256(const std::string& string) {
+        OpenSSLPointer<EVP_MD_CTX> context(EVP_MD_CTX_new());
+
+        if(context.get() == NULL) {
+            return "";
+        }
+
+        if(!EVP_DigestInit_ex(context.get(), EVP_sha256(), NULL)) {
+            return "";
+        }
+
+        if(!EVP_DigestUpdate(context.get(), string.c_str(), string.length())) {
+            return "";
+        }
+
+        unsigned char hash[EVP_MAX_MD_SIZE];
+        unsigned int lengthOfHash = 0;
+
+        if(!EVP_DigestFinal_ex(context.get(), hash, &lengthOfHash)) {
+            return "";
+        }
+
         std::stringstream ss;
-        for(int i = 0; i < SHA256_DIGEST_LENGTH; i++)
+        for(unsigned int i = 0; i < lengthOfHash; ++i)
         {
             ss << std::hex << std::setw(2) << std::setfill('0') << (int)hash[i];
         }
-        return ss.str();
+        std::string hashed = ss.str();
+        return hashed;
     }
 }

@@ -3,10 +3,29 @@ project(blockchain)
 
 set(CMAKE_CXX_STANDARD 20)
 
+find_package(MPI COMPONENTS CXX REQUIRED)
+find_package(OpenSSL REQUIRED)
+add_definitions(-DOMPI_SKIP_MPICXX)
+
+include_directories(SYSTEM ${MPI_INCLUDE_PATH})
+
 add_executable(blockchain main.cpp
         Blockchain/Blockchain.cpp
         Blockchain/Blockchain.h
         Blockchain/Block.cpp
         Blockchain/Block.h
         sha/sha256.cpp
+        sha/sha256.h
+        mine/mine.cpp
+        mine/mine.h
+)
+
+target_include_directories(${PROJECT_NAME} PRIVATE)
+#cmake finte...
+target_link_libraries(
+        ${PROJECT_NAME}
+        PRIVATE
+        ${MPI_CXX_LIBRARIES}
+        ${OPENSSL_CRYPTO_LIBRARIES}
+        ${OPENSSL_SSL_LIBRARY}
 )
