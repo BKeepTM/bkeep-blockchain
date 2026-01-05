@@ -5,6 +5,8 @@ set(CMAKE_CXX_STANDARD 20)
 
 find_package(MPI COMPONENTS CXX REQUIRED)
 find_package(OpenSSL REQUIRED)
+find_package(OpenMP REQUIRED)
+
 add_definitions(-DOMPI_SKIP_MPICXX)
 
 include_directories(SYSTEM ${MPI_INCLUDE_PATH})
@@ -28,4 +30,5 @@ target_link_libraries(
         ${MPI_CXX_LIBRARIES}
         ${OPENSSL_CRYPTO_LIBRARIES}
         ${OPENSSL_SSL_LIBRARY}
+        ${OPENMP_CXX_LIBRARY}
 )

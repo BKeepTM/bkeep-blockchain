@@ -5,16 +5,11 @@ int main(int argc, char** argv) {
     MPI_Init(&argc, &argv);
     MPI_Comm_size(MPI_COMM_WORLD, &size_Of_Cluster);
     MPI_Comm_rank(MPI_COMM_WORLD, &process_Rank);
+    while (1) {
 
+    }
     printf("Hello World from process %d of %d\n", process_Rank, size_Of_Cluster);
 
     MPI_Finalize();
-    auto lang = "C++";
-    std::cout << "Hello and welcome to " << lang << "!\n";
-
-    for (int i = 1; i <= 5; i++) {
-        std::cout << "i = " << i << std::endl;
-    }
-
     return 0;
 }

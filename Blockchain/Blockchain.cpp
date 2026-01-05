@@ -32,6 +32,22 @@ int Blockchain::calculateDifficulty() {
     }
     return this->difficulty;
 }
+
+int Blockchain::calculateCumulativeDifficulty() {
+    int cumulativeDifficulty = 0;
+    for (int i = 1; i < chain.size(); i++) {
+        if (!this->isValidNewBlock(chain[i],chain[i-1])) {
+            return -1;
+        }
+        cumulativeDifficulty += chain[i].difficulty*chain[i].difficulty;
+    }
+    return cumulativeDifficulty;
+}
+
+bool Blockchain::checkAndReplaceChain(Blockchain receivedChain) {
+    int receivedCumulativeDiff = receivedChain.calculateCumulativeDifficulty();
+        
+}
 bool Blockchain::addBloc(const Block& newBlock) {
     if (isValidNewBlock(newBlock,this->getLatestBlock())) {
         this->chain.push_back(newBlock);

@@ -11,9 +11,10 @@ public:
     Block createGenesisBlock();
     Block getLatestBlock();
     int calculateDifficulty();
+    int calculateCumulativeDifficulty();
     static bool isValidNewBlock(const Block& oldBlock, const Block &newBlock);
     bool addBloc(const Block& newBlock);
-
+    bool checkAndReplaceChain(Blockchain receivedChain);
     std::vector<Block> chain;
 
     int difficulty;

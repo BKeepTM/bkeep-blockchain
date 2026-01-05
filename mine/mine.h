@@ -7,4 +7,9 @@
 #include "../sha/sha256.h"
 #include "../Blockchain/Block.h"
 #include <string>
+#include <mpi.h>
+
+
+Block mine(const Block &previousBlock, std::string data, int difficulty);
+
 #endif //BLOCKCHAIN_MINE_H
