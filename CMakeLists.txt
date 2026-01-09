@@ -20,6 +20,8 @@ add_executable(blockchain main.cpp
         sha/sha256.h
         mine/mine.cpp
         mine/mine.h
+        util/split_util.cpp
+        util/split_util.h
 )
 
 target_include_directories(${PROJECT_NAME} PRIVATE)

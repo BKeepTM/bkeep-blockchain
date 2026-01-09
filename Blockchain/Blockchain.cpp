@@ -1,13 +1,18 @@
 #include "Blockchain.h"
 
+
+
 Blockchain::Blockchain(int difficulty, int blockGenerationInterval, int adjustmentInterval) {
     this->difficulty = difficulty;
     this->blockGenerationInterval= blockGenerationInterval;
     this->adjustmentInterval = adjustmentInterval;
 }
 
-Block Blockchain::createGenesisBlock() {
-    return {0,"0",std::time(NULL),"Genesis block",this->difficulty,0};
+void Blockchain::createGenesisBlock() {
+    const auto p1 = std::chrono::system_clock::now();
+    time_t timestamp =std::chrono::duration_cast<std::chrono::seconds>(
+                   p1.time_since_epoch()).count();
+    chain.emplace_back(0,"0",timestamp,"Genesis block",this->difficulty,0);
 }
 
 Block Blockchain::getLatestBlock() {
@@ -44,17 +49,45 @@ int Blockchain::calculateCumulativeDifficulty() {
     return cumulativeDifficulty;
 }
 
-bool Blockchain::checkAndReplaceChain(Blockchain receivedChain) {
-    int receivedCumulativeDiff = receivedChain.calculateCumulativeDifficulty();
-        
+int Blockchain::checkDifficulty(Blockchain chain1, Blockchain chain2)
+{
+    int diff1= chain1.calculateCumulativeDifficulty();
+    int diff2 = chain2.calculateCumulativeDifficulty();
+    if (diff1 == diff2)
+        return 2;
+   return diff1 > diff2;
+
 }
 bool Blockchain::addBloc(const Block& newBlock) {
-    if (isValidNewBlock(newBlock,this->getLatestBlock())) {
+    if (isValidNewBlock(this->getLatestBlock(),newBlock)) {
         this->chain.push_back(newBlock);
+        this->difficulty = this->calculateDifficulty();
         return true;
     }
     return false;
 }
+
+std::string Blockchain::toString() {
+    std::string returnStr;
+    for (int i = 0; i < chain.size();i++) {
+        returnStr+=chain[i].toString();
+        if (i +1 != chain.size()) {
+            returnStr+=",";
+        }
+    }
+    return returnStr;
+}
+Blockchain Blockchain::fromString(std::string input) {
+    std::vector<std::string> block_string_vct = split_util::split(input,',');
+    std::vector<Block> chain;
+    for (int i = 0; i <block_string_vct.size(); i++) {
+        chain.push_back(Block::fromString(block_string_vct[i]));
+    }
+    Blockchain out_chain(0,2,2);
+    out_chain.chain = chain;
+    return out_chain;
+};
+
 bool Blockchain::isValidNewBlock(const Block& oldBlock, const Block &newBlock) {
     if (newBlock.index != oldBlock.index + 1) return false;
     if (newBlock.previousHash != oldBlock.hash) return false;
