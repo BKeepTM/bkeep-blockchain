@@ -1,5 +1,6 @@
 #include "Block.h"
 
+#include <oneapi/tbb/detail/_range_common.h>
 
 
 Block::Block(int index, std::string previousHash, time_t timestamp, std::string data, int difficulty, int token) {
@@ -22,4 +23,12 @@ Block::Block(int index, std::string previousHash,time_t timestamp, std::string d
 }
 std::string Block::calculateHash() {
     return sha::sha256(std::to_string(this->index) + this->previousHash + this->data + std::to_string(this->timestamp) + std::to_string(this->difficulty) + std::to_string(this->token));
+}
+std::string Block::toString() {
+    return std::to_string(this->index) + "" +";" + this->previousHash + ";" +  this->data + ";" +  std::to_string(this->timestamp) + ";" + std::to_string(this->difficulty) + ";" + std::to_string(this->token);
+}
+
+Block Block::fromString(std::string input) {
+    std::vector<std::string> block_string = split_util::split(input,';');
+    return {stoi(block_string[0]),block_string[1],time_t(stol(block_string[2])),block_string[3],stoi(block_string[4]),stoi(block_string[5])};
 }

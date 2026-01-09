@@ -8,6 +8,7 @@
 #include "../Blockchain/Block.h"
 #include <string>
 #include <mpi.h>
+#include <chrono>
 
 
 Block mine(const Block &previousBlock, std::string data, int difficulty);

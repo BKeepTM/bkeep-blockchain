@@ -3,6 +3,8 @@
 #include <cstdint>
 #include <string>
 #include <utility>
+#include "../util/split_util.h"
+#include <vector>
 #include "../sha/sha256.h"
 
 class Block {
@@ -10,7 +12,8 @@ class Block {
     Block(int index, std::string previousHash,time_t timestamp, std::string data, int difficulty, int token);
     Block(int index, std::string previousHash,time_t timestamp, std::string data, int difficulty, int token, std::string &hash);
     std::string calculateHash();
-
+    std::string toString();
+    static Block fromString(std::string input);
     int index;
     int difficulty;
     int token;
