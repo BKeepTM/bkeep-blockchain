@@ -7,6 +7,7 @@
 #include <vector>
 #include "../sha/sha256.h"
 
+
 class Block {
     public:
     Block(int index, std::string previousHash,time_t timestamp, std::string data, int difficulty, int token);

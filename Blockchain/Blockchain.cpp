@@ -27,13 +27,13 @@ int Blockchain::calculateDifficulty() {
     }
 
     const time_t timeTaken = latestBlock.timestamp - this->chain[this->chain.size() - this->adjustmentInterval].timestamp;
-    const time_t timeExpected = this->blockGenerationInterval * this->adjustmentInterval * 100;
+    const time_t timeExpected = this->blockGenerationInterval * this->adjustmentInterval * 0.5;
 
     if (timeTaken < timeExpected / 2) {
-        return this->difficulty += 1;
+        return this->difficulty + 1;
     }
     if (timeTaken > timeExpected * 2 && this->difficulty > 0){
-        return this->difficulty -= 1;
+        return this->difficulty - 1;
     }
     return this->difficulty;
 }
@@ -41,7 +41,7 @@ int Blockchain::calculateDifficulty() {
 int Blockchain::calculateCumulativeDifficulty() {
     int cumulativeDifficulty = 0;
     for (int i = 1; i < chain.size(); i++) {
-        if (!this->isValidNewBlock(chain[i],chain[i-1])) {
+        if (!this->isValidNewBlock(chain[i-1],chain[i])) {
             return -1;
         }
         cumulativeDifficulty += chain[i].difficulty*chain[i].difficulty;
@@ -88,10 +88,13 @@ Blockchain Blockchain::fromString(std::string input) {
     return out_chain;
 };
 
-bool Blockchain::isValidNewBlock(const Block& oldBlock, const Block &newBlock) {
+bool Blockchain::isValidNewBlock(const Block& oldBlock, const Block &newBlock) {\
+    const auto p1 = std::chrono::system_clock::now();
+    time_t timestamp =std::chrono::duration_cast<std::chrono::seconds>(
+                   p1.time_since_epoch()).count();
     if (newBlock.index != oldBlock.index + 1) return false;
     if (newBlock.previousHash != oldBlock.hash) return false;
-    if (newBlock.timestamp > time(nullptr) + 60 * 1000 ) return false; //validacija casovne znacke za trenutni cas(60sek)
+    if (newBlock.timestamp > oldBlock.timestamp + 60 * 1000 ) return false; //validacija casovne znacke za trenutni cas(60sek)
     if (newBlock.timestamp < oldBlock.timestamp - 60 * 1000) return false; //validacija casovne znacke glede na prejsnji blok
     return true;
 }

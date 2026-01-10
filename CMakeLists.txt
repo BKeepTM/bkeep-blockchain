@@ -6,6 +6,7 @@ set(CMAKE_CXX_STANDARD 20)
 find_package(MPI COMPONENTS CXX REQUIRED)
 find_package(OpenSSL REQUIRED)
 find_package(OpenMP REQUIRED)
+find_package(CURL REQUIRED )
 
 add_definitions(-DOMPI_SKIP_MPICXX)
 
@@ -22,6 +23,8 @@ add_executable(blockchain main.cpp
         mine/mine.h
         util/split_util.cpp
         util/split_util.h
+        api/request.cpp
+        api/request.h
 )
 
 target_include_directories(${PROJECT_NAME} PRIVATE)
@@ -33,4 +36,5 @@ target_link_libraries(
         ${OPENSSL_CRYPTO_LIBRARIES}
         ${OPENSSL_SSL_LIBRARY}
         ${OPENMP_CXX_LIBRARY}
+        ${CURL_LIBRARIES}
 )
