@@ -3,19 +3,41 @@
 #include <random>
 #include <thread>
 #include <curl/curl.h>
+#include <omp.h>
 #include "util/split_util.h"
 #include "Blockchain/Block.h"
 #include "Blockchain/Blockchain.h"
 #include "mine/mine.h"
-
+#include "api/request.h"
 #define DEBUG 0
 
 int main(int argc, char** argv) {
     std::string bchain_str;
     //difficulty ne sme bit premali na zacetku, sicer
-    Blockchain chain = Blockchain(4,4,2);
+
+
+    if (argc < 8){
+        std::cout << "Missing commandline arguments." << std::endl;
+        return 1;
+    }
+    std::string username = std::string(argv[2]);
+    std::string password = std::string(argv[4]);
+    std::string api_url = std::string(argv[6]);
+
+    request::API_URL = api_url;
+    std::string data = request::getBlockData();
+
+    if ( request::login(username,password) == -1){
+        std::cout << "Login failed for user: " <<username<< std::endl;
+        return 1;
+    }
+    Blockchain chain = request::getBlockchain();
     chain.createGenesisBlock();
+
+    int t = stoi(std::string(argv[8]));
+    omp_set_num_threads(t);
     int process_Rank, size_Of_Cluster;
+
     MPI_Init(&argc, &argv);
 
     MPI_Comm_size(MPI_COMM_WORLD, &size_Of_Cluster);
@@ -26,7 +48,8 @@ int main(int argc, char** argv) {
     std::uniform_int_distribution<std::mt19937::result_type> dist6(1,255); // distribution in range [1, 6]
     int random = dist6(rng);
     char xd = random;
-    std::string data = std::to_string(xd);
+
+
     int prev_token = 0;
     MPI_Status status;
     MPI_Request request;
@@ -88,6 +111,7 @@ int main(int argc, char** argv) {
                 std::cout<<"Mined invalid block."<<std::endl;
                 std::cout.flush();
             }
+            request::post_block(block);
             continue;
         }
         chain.difficulty = chain.calculateDifficulty();

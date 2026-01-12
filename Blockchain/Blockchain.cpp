@@ -7,12 +7,13 @@ Blockchain::Blockchain(int difficulty, int blockGenerationInterval, int adjustme
     this->blockGenerationInterval= blockGenerationInterval;
     this->adjustmentInterval = adjustmentInterval;
 }
-
+// same ce je prazno
 void Blockchain::createGenesisBlock() {
     const auto p1 = std::chrono::system_clock::now();
     time_t timestamp =std::chrono::duration_cast<std::chrono::seconds>(
                    p1.time_since_epoch()).count();
-    chain.emplace_back(0,"0",timestamp,"Genesis block",this->difficulty,0);
+    if (chain.empty())
+        chain.emplace_back(0,"0",timestamp,"Genesis block",this->difficulty,0);
 }
 
 Block Blockchain::getLatestBlock() {

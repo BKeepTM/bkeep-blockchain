@@ -1,7 +1,5 @@
 #include "Block.h"
 
-#include <oneapi/tbb/detail/_range_common.h>
-
 #define DEBUG 1
 Block::Block(int index, std::string previousHash, time_t timestamp, std::string data, int difficulty, int token) {
     this->index = index;
