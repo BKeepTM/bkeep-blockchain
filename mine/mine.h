@@ -8,9 +8,10 @@
 #include "../Blockchain/Block.h"
 #include <string>
 #include <mpi.h>
+#include <iostream>
 #include <chrono>
 
 
-Block mine(const Block &previousBlock, std::string data, int in_difficulty, int token);
+Block mine(const Block &previousBlock, std::string data, int in_difficulty, long unsigned token);
 
 #endif //BLOCKCHAIN_MINE_H

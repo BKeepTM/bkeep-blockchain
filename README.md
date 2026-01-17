@@ -21,6 +21,10 @@ sudo apt-get install nlohmann-json3-dev
 ```
 ## example usage
 ```bash
-mpirun -np 4 cmake-build-release/blockhain -username blockchain -password blockchain -nfesLimit http://localhost:3000 -t 8
+mpirun -np 4 cmake-build-release/blockhain -username blockchain -password blockchain -nfesLimit https://pi.darkosever.si -t 8 -interval 5 -expected 5
 
 ```
+# Predstavitev
+
+## Tabela pohitritev
+![img.png](img.png)

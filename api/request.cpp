@@ -125,7 +125,7 @@ Blockchain request::getBlockchain() {
         // --- Use Existing Method ---
         // Now that we have the string in the format your class likes, we use the existing method
         if (json_chain.empty())
-            return {4,10,4};
+            return {5,4,4};
         return Blockchain::fromString(serialized_chain);
 
     } catch (const std::exception& e) {

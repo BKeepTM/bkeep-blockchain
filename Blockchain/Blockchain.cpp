@@ -84,7 +84,7 @@ Blockchain Blockchain::fromString(std::string input) {
     for (int i = 0; i <block_string_vct.size(); i++) {
         chain.push_back(Block::fromString(block_string_vct[i]));
     }
-    Blockchain out_chain(4,6,2);
+    Blockchain out_chain(5,5,4);
     out_chain.chain = chain;
     return out_chain;
 };
@@ -96,7 +96,8 @@ bool Blockchain::isValidNewBlock(const Block& oldBlock, const Block &newBlock) {
 
     if (newBlock.index != oldBlock.index + 1) return false;
     if (newBlock.previousHash != oldBlock.hash) return false;
-    if (newBlock.timestamp > oldBlock.timestamp + 60 * 1000 ) return false; //validacija casovne znacke za trenutni cas(60sek)
-    if (newBlock.timestamp < oldBlock.timestamp - 60 * 1000) return false; //validacija casovne znacke glede na prejsnji blok
+    if (newBlock.timestamp > oldBlock.timestamp + 60 * 1000) return false; //validacija casovne znacke za trenutni cas(60sek)
+    if (newBlock.timestamp < oldBlock.timestamp - 60 * 1000 ) return false; //validacija casovne znacke glede na prejsnji blok
+    //if (newBlock.previousHash != oldBlock.calculateHash()) return false;
     return true;
 }
