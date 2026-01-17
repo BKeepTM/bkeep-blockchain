@@ -11,6 +11,6 @@
 #include <chrono>
 
 
-Block mine(const Block &previousBlock, std::string data, int difficulty,int token);
+Block mine(const Block &previousBlock, std::string data, int in_difficulty, int token);
 
 #endif //BLOCKCHAIN_MINE_H

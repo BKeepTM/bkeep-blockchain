@@ -18,14 +18,12 @@ class request {
         static Blockchain getBlockchain();
         static int remove(int index);
         static int post_block(Block block);
-        static Blockchain getBlock();
+        static Block getBlock();
         static std::string getBlockData();
         static CURL *handle;
         static std::string token;
 
 };
-std::string request::API_URL ="http://localhost:3000";
-std::string request::token = ""; // tukaj se mora inicializirati, drugace problem.
-CURL *request::handle = curl_easy_init();
+
 
 #endif //BLOCKCHAIN_REQUEST_H

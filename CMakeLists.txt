@@ -37,5 +37,6 @@ target_link_libraries(
         ${OPENSSL_SSL_LIBRARY}
         ${OPENMP_CXX_LIBRARY}
         ${CURL_LIBRARIES}
+        OpenMP::OpenMP_CXX
         nlohmann_json::nlohmann_json
 )

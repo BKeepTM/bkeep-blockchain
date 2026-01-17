@@ -3,11 +3,22 @@
 //
 
 #include "request.h"
+
+std::string request::API_URL ="http://localhost:3000"; // primer
+std::string request::token = ""; // tukaj se mora inicializirati, drugace problem.
+CURL *request::handle = curl_easy_init();
+
+static size_t WriteCallback(void* contents, size_t size, size_t nmemb, void* userp) {
+    ((std::string*)userp)->append((char*)contents, size * nmemb);
+    return size * nmemb;
+}
+
 int request::login(std::string username, std::string password) {
+
     if (!handle)
         return -1;
-    std::string request_url = API_URL + "/login";
-    std::string json_string = R"({"username":")" + username + R"(,"password":")" + password + R"("})";
+    std::string request_url = API_URL + "/users/login";
+    std::string json_string = R"({"username":")" + username + R"(","password":")" + password + R"("})";
     struct curl_slist *slist1;
     slist1 = nullptr;
     slist1 = curl_slist_append(slist1, "Content-Type: application/json");
@@ -21,7 +32,9 @@ int request::login(std::string username, std::string password) {
     curl_easy_setopt(handle, CURLOPT_MAXREDIRS, 50L);
     curl_easy_setopt(handle, CURLOPT_CUSTOMREQUEST, "POST");
     curl_easy_setopt(handle, CURLOPT_TCP_KEEPALIVE, 1L);
-    curl_easy_setopt(handle, CURLOPT_WRITEFUNCTION, &response);
+    curl_easy_setopt(handle, CURLOPT_WRITEFUNCTION, WriteCallback);
+    curl_easy_setopt(handle, CURLOPT_WRITEDATA, &response);
+
     CURLcode res = curl_easy_perform(handle);
     //glupi json parsing
     if (res == CURLE_OK) {
@@ -29,7 +42,7 @@ int request::login(std::string username, std::string password) {
         if (found != std::string::npos) {
             std::size_t end = response.find('\"',found + 11);
             if (end != std::string::npos)
-                token = response.substr(found+9,end - found + 9);
+                token = response.substr(found+9,end - found - 9);
             else return -1;
         } else return -1;
     } else
@@ -38,13 +51,10 @@ int request::login(std::string username, std::string password) {
     return 0;
 }
 
-static size_t WriteCallback(void* contents, size_t size, size_t nmemb, void* userp) {
-    ((std::string*)userp)->append((char*)contents, size * nmemb);
-    return size * nmemb;
-}
+
 //------AI CODE-------
 Blockchain request::getBlockchain() {
-    std::string request_url = API_URL + "/blockchain";
+    std::string request_url = API_URL + "/blockchain/list";
     std::string response;
 
     if (!handle || token.empty())
@@ -54,13 +64,14 @@ Blockchain request::getBlockchain() {
     struct curl_slist *slist1 = nullptr;
     std::string t_string = "Authorization: Bearer " + token;
 
-    slist1 = curl_slist_append(slist1, "Content-Type: application/json");
+    //slist1 = curl_slist_append(slist1, "Content-Type: application/json");
     slist1 = curl_slist_append(slist1, t_string.c_str());
 
     curl_easy_setopt(handle, CURLOPT_URL, request_url.c_str());
 
     curl_easy_setopt(handle, CURLOPT_NOPROGRESS, 1L);
     curl_easy_setopt(handle, CURLOPT_USERAGENT, "curl/7.38.0");
+    curl_easy_setopt(handle, CURLOPT_POSTFIELDS, "");
     curl_easy_setopt(handle, CURLOPT_HTTPHEADER, slist1);
     curl_easy_setopt(handle, CURLOPT_MAXREDIRS, 50L);
     curl_easy_setopt(handle, CURLOPT_CUSTOMREQUEST, "GET"); // Changed to GET (standard for fetching data), change back to POST if your API requires it.
@@ -113,6 +124,8 @@ Blockchain request::getBlockchain() {
 
         // --- Use Existing Method ---
         // Now that we have the string in the format your class likes, we use the existing method
+        if (json_chain.empty())
+            return {4,10,4};
         return Blockchain::fromString(serialized_chain);
 
     } catch (const std::exception& e) {
@@ -192,7 +205,7 @@ int request::post_block(Block block) {
 
     return (int)http_code; // Returns 201 if successful, 500 if server error, etc.
 }
-Blockchain request::getBlock() {
+Block request::getBlock() {
 
 }
 

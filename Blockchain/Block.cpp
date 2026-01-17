@@ -20,7 +20,8 @@ Block::Block(int index, std::string previousHash,time_t timestamp, std::string d
     this->hash=hash;// xD
 }
 std::string Block::calculateHash() {
-    return sha::sha256(std::to_string(this->index) + this->previousHash + this->data + std::to_string(this->timestamp) + std::to_string(this->difficulty) + std::to_string(this->token));
+    sha sha;
+    return sha.sha256(std::to_string(this->index) + this->previousHash + this->data + std::to_string(this->timestamp) + std::to_string(this->difficulty) + std::to_string(this->token));
 }
 std::string Block::toString() {
     return std::to_string(this->index) + "" +";" + this->previousHash + ";" + std::to_string(this->timestamp) + ";" +  this->data+ ";" + std::to_string(this->difficulty) + ";" + std::to_string(this->token) + ";" + hash;

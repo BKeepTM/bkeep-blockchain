@@ -9,11 +9,11 @@
 #include "Blockchain/Blockchain.h"
 #include "mine/mine.h"
 #include "api/request.h"
-#define DEBUG 0
+#define DEBUG 1
 
 int main(int argc, char** argv) {
     std::string bchain_str;
-    //difficulty ne sme bit premali na zacetku, sicer
+    //difficulty ne sme bit premali na zacetku, sicer je problem.
 
 
     if (argc < 8){
@@ -23,14 +23,18 @@ int main(int argc, char** argv) {
     std::string username = std::string(argv[2]);
     std::string password = std::string(argv[4]);
     std::string api_url = std::string(argv[6]);
-
+    if (DEBUG){
+        std::cout<<"Got parameters"<<std::endl;
+    }
     request::API_URL = api_url;
-    std::string data = request::getBlockData();
 
     if ( request::login(username,password) == -1){
         std::cout << "Login failed for user: " <<username<< std::endl;
         return 1;
     }
+    std::string data = request::getBlockData();
+    std::cout<<"Getting chain: "<<std::endl;
+    std::cout.flush();
     Blockchain chain = request::getBlockchain();
     chain.createGenesisBlock();
 
@@ -82,6 +86,7 @@ int main(int argc, char** argv) {
                 std::cout<<"received better chain: "<<process_Rank<<"from: "<<status.MPI_SOURCE<<std::endl;
                 std::cout.flush();
                 recv_chain.difficulty = chain.difficulty;
+
                 recv_chain.adjustmentInterval = chain.adjustmentInterval;
                 recv_chain.blockGenerationInterval = chain.adjustmentInterval;
                 chain.chain = recv_chain.chain;
@@ -111,9 +116,9 @@ int main(int argc, char** argv) {
                 std::cout<<"Mined invalid block."<<std::endl;
                 std::cout.flush();
             }
-            request::post_block(block);
             continue;
         }
+        request::post_block(block);
         chain.difficulty = chain.calculateDifficulty();
         prev_token = 0;
         bchain_str = chain.toString();

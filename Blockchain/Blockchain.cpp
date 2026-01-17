@@ -84,7 +84,7 @@ Blockchain Blockchain::fromString(std::string input) {
     for (int i = 0; i <block_string_vct.size(); i++) {
         chain.push_back(Block::fromString(block_string_vct[i]));
     }
-    Blockchain out_chain(0,2,2);
+    Blockchain out_chain(4,6,2);
     out_chain.chain = chain;
     return out_chain;
 };
@@ -93,6 +93,7 @@ bool Blockchain::isValidNewBlock(const Block& oldBlock, const Block &newBlock) {
     const auto p1 = std::chrono::system_clock::now();
     time_t timestamp =std::chrono::duration_cast<std::chrono::seconds>(
                    p1.time_since_epoch()).count();
+
     if (newBlock.index != oldBlock.index + 1) return false;
     if (newBlock.previousHash != oldBlock.hash) return false;
     if (newBlock.timestamp > oldBlock.timestamp + 60 * 1000 ) return false; //validacija casovne znacke za trenutni cas(60sek)
