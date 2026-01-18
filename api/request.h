@@ -6,7 +6,7 @@
 #define BLOCKCHAIN_REQUEST_H
 #include <string>
 #include <curl/curl.h>
-
+#include <nlohmann/json.hpp>
 #include "../Blockchain/Blockchain.h"
 
 
@@ -18,12 +18,12 @@ class request {
         static Blockchain getBlockchain();
         static int remove(int index);
         static int post_block(Block block);
-        static Blockchain getBlock();
+        static Block getBlock();
+        static std::string getBlockData();
         static CURL *handle;
         static std::string token;
 
 };
-std::string request::API_URL ="http://localhost:3000";
-CURL *request::handle = curl_easy_init();
+
 
 #endif //BLOCKCHAIN_REQUEST_H

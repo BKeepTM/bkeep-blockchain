@@ -10,14 +10,15 @@
 
 class Block {
     public:
-    Block(int index, std::string previousHash,time_t timestamp, std::string data, int difficulty, int token);
-    Block(int index, std::string previousHash,time_t timestamp, std::string data, int difficulty, int token, std::string &hash);
+    Block(int index, std::string previousHash,time_t timestamp, std::string data, int difficulty, long unsigned token);
+    Block(int index, std::string previousHash,time_t timestamp, std::string data, int difficulty, long unsigned token, std::string &hash);
     std::string calculateHash();
     std::string toString();
     static Block fromString(std::string input);
+
     int index;
     int difficulty;
-    int token;
+    long unsigned token;
 
     std::string hash;
     std::string previousHash;
