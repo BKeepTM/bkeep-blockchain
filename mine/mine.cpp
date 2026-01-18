@@ -1,6 +1,3 @@
-//
-// Created by nejcsorgo on 12/28/2025.
-//
 #include "mine.h"
 
 #include <omp.h>
@@ -26,13 +23,10 @@ Block mine(const Block &previousBlock, std::string data, int in_difficulty, long
     std::string difficulty_str = std::to_string(difficulty);
 
     std::string constant =  index_str + data + timestamp_str  + prev_hash + difficulty_str;
-
-    // del kode ko je treba pararelizirati
-    #pragma omp parallel default(none) shared(flag,r_hash,token) firstprivate(hash,lmt,constant,zero,difficulty)  // xD
+    #pragma omp parallel default(none) shared(flag,r_hash,token) firstprivate(hash,lmt,constant,zero,difficulty)
     {
         int inv_limit = lmt/omp_get_num_threads();
-        long unsigned local;
-        local = token + inv_limit * omp_get_thread_num();;
+        long unsigned local = token + inv_limit * omp_get_thread_num();;
         long unsigned local_limit = local + inv_limit;
         sha sha;
         do {
@@ -41,14 +35,15 @@ Block mine(const Block &previousBlock, std::string data, int in_difficulty, long
 
         } while (hash.substr(0, difficulty) !=  zero  && local < local_limit && !flag);
 
-        #pragma omp critical
-        {
-            if (hash.substr(0, difficulty) == std::string(difficulty, '0')){
+
+        if (hash.substr(0, difficulty) == std::string(difficulty, '0')){
+            #pragma omp critical
+            {
                 flag = true;
                 r_hash = hash;
                 token = local;
             }
-        };
+        }   ;
     }
     if (!flag){
         index = -1;
